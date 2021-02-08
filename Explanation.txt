@@ -1,0 +1,7 @@
+The yield method of the thread class is defined by oracle as:
+
+"A hint to the scheduler that the current thread is willing to 
+yield its current use of a processor. The scheduler is free to ignore this hint."
+
+This means that the scheduler does not necessarily yield the process when it is told to 
+and therefore could cause a difference in running time every time it is being run.

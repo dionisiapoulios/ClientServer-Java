@@ -139,7 +139,7 @@ public class Client extends Thread{
         }
         setNumberOfTransactions(i);		/* Record the number of transactions processed */
 
-        System.out.println("\n DEBUG : Client.readTransactions() - " + getNumberOfTransactions() + " transactions processed");
+        //System.out.println("\n DEBUG : Client.readTransactions() - " + getNumberOfTransactions() + " transactions processed");
 
         inputStream.close( );
 
@@ -164,7 +164,7 @@ public class Client extends Thread{
 
             transaction[i].setTransactionStatus("sent");   /* Set current transaction status */
 
-            System.out.println("\n DEBUG : Client.sendTransactions() - sending transaction on account " + transaction[i].getAccountNumber());
+            //System.out.println("\n DEBUG : Client.sendTransactions() - sending transaction on account " + transaction[i].getAccountNumber());
 
             objNetwork.send(transaction[i]);                            /* Transmit current transaction */
             i++;
@@ -191,7 +191,7 @@ public class Client extends Thread{
 
             objNetwork.receive(transact);                               	/* Receive updated transaction from the network buffer */
 
-            System.out.println("\n DEBUG : Client.receiveTransactions() - receiving updated transaction on account " + transact.getAccountNumber());
+            //System.out.println("\n DEBUG : Client.receiveTransactions() - receiving updated transaction on account " + transact.getAccountNumber());
 
             System.out.println(transact);                               	/* Display updated transaction */
             i++;
@@ -230,7 +230,7 @@ public class Client extends Thread{
             receiveTransactions(transact);
         }
         if(objNetwork.getOutBufferStatus().equals("empty")&& objNetwork.getInBufferStatus().equals("empty")) {
-            System.out.println("client Disconnected");
+            
             objNetwork.disconnect(objNetwork.getClientIP());
         }
         if(clientOperation == "sending") {
