@@ -227,8 +227,10 @@ public class Client extends Thread{
         else
             receiveTransactions(transact);
 
-        if(objNetwork.getOutBufferStatus().equals("empty")&& objNetwork.getInBufferStatus().equals("empty"))
-        objNetwork.disconnect(objNetwork.getClientIP());
+        if(objNetwork.getOutBufferStatus().equals("empty")&& objNetwork.getInBufferStatus().equals("empty")) {
+            System.out.println("client Disconnected");
+            objNetwork.disconnect(objNetwork.getClientIP());
+        }
 
     }
 }
