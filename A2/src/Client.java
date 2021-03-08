@@ -237,6 +237,8 @@ public class Client extends Thread {
             receiveClientStartTime = System.currentTimeMillis();
             receiveTransactions(transact);
         }
+        System.out.println(Network.getOutBufferStatus());
+        System.out.println(Network.getInBufferStatus());
         if(Network.getOutBufferStatus().equals("empty")&& Network.getInBufferStatus().equals("empty")) {
             
             Network.disconnect(Network.getClientIP());

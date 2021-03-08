@@ -144,7 +144,7 @@ public class Server extends Thread {
        * Mutator method of Server class
        * 
        * @return 
-       * @param tId
+       * @param stid
        */
        public void setServerThreadId(String stid)
        { 
@@ -444,7 +444,7 @@ public class Server extends Thread {
 //  //System.out.println("\n DEBUG : Server.run() - starting server thread " + objNetwork.getServerConnectionStatus());
 //
 
-	Thread.yield();
+//	Thread.yield();
 	processTransactions(trans);
 	
 	if(serverThreadId.equals("Thread1")) {
@@ -456,6 +456,7 @@ public class Server extends Thread {
 	}
 	
 	if(serverThreadRunningStatus1.equals("terminated") && serverThreadRunningStatus2.equals("terminated")) {
+        System.out.println("hi12313123");
 		Network.disconnect(Network.getServerIP());
 
 	}
