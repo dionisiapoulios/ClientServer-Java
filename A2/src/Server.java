@@ -144,7 +144,7 @@ public class Server extends Thread {
        * Mutator method of Server class
        * 
        * @return 
-       * @param tId
+       * @param stid
        */
        public void setServerThreadId(String stid)
        { 
@@ -341,11 +341,12 @@ public class Server extends Thread {
      * @param i, amount
      */
    
-     public double deposit(int i, double amount){  
-    	 
-    	double curBalance;      /* Current account balance */
-       
-     	synchronized(account) {
+     public double deposit(int i, double amount){
+
+
+
+     	synchronized(account[i]) {
+            double curBalance;      /* Current account balance */
      		curBalance = account[i].getBalance( );          /* Get current account balance */
         
      		/* NEW : A server thread is blocked before updating the 10th , 20th, ... 70th account balance in order to simulate an inconsistency situation */
@@ -375,10 +376,11 @@ public class Server extends Thread {
      */
  
      public double withdraw(int i, double amount)
-     {  double curBalance;      /* Current account balance */
-        
-     	synchronized(account) {
-     	curBalance = account[i].getBalance( );          /* Get current account balance */
+     {
+
+     	synchronized(account [i]) {
+     	    double curBalance;      /* Current account balance */
+     	    curBalance = account[i].getBalance( );          /* Get current account balance */
           
         System.out.println("\n DEBUG : Server.withdraw - " + "i " + i + " Current balance " + curBalance + " Amount " + amount + " " + getServerThreadId());
         
@@ -395,9 +397,10 @@ public class Server extends Thread {
      */
  
      public double query(int i)
-     {  double curBalance;      /* Current account balance */
-     
-     	synchronized(account) {
+     {
+
+     	synchronized(account[i]) {
+            double curBalance;      /* Current account balance */
     	 curBalance = account[i].getBalance( );          /* Get current account balance */
         
         System.out.println("\n DEBUG : Server.query - " + "i " + i + " Current balance " + curBalance + " " + getServerThreadId()); 
@@ -443,8 +446,7 @@ public class Server extends Thread {
 //	serverStartTime = System.currentTimeMillis();
 //  //System.out.println("\n DEBUG : Server.run() - starting server thread " + objNetwork.getServerConnectionStatus());
 //
-
-	Thread.yield();
+        Thread.yield();
 	processTransactions(trans);
 	
 	if(serverThreadId.equals("Thread1")) {
