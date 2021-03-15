@@ -602,7 +602,7 @@ public class Network extends Thread {
 	 * @param
 	 */
 	public void run() {
-		// // System.out.println("\n Debug : Network.run() - starting network thread");
+		  System.out.println("\n Debug : Network.run() - starting network thread");
 
 		while (true) {
 			Thread.yield();

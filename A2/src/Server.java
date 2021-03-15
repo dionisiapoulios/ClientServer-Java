@@ -428,44 +428,41 @@ public class Server extends Thread {
      */
       
     public void run()
-    {   
-    	
-    	Transactions trans = new Transactions();
-    	 long serverStartTime, serverEndTime;
-    
-	//// System.out.println("\n Debug : Server.run() - starting server thread " + getServerThreadId() + " " + Network.getServerConnectionStatus());
-    	
-//	Transactions trans = new Transactions();
-//    	long serverStartTime, serverEndTime;
-    
-	//// System.out.println("\n Debug : Server.run() - starting server thread " + Network.getServerConnectionStatus());
-    	
-    	/* .....................................................................................................................................................................................................*/
-	
-	
-//	serverStartTime = System.currentTimeMillis();
+    {
+
+        Transactions trans = new Transactions();
+        long serverStartTime, serverEndTime;
+
+        //// System.out.println("\n Debug : Server.run() - starting server thread " + getServerThreadId() + " " + Network.getServerConnectionStatus());
+
+        //// System.out.println("\n Debug : Server.run() - starting server thread " + Network.getServerConnectionStatus());
+
+        /* .....................................................................................................................................................................................................*/
+
+
+        serverStartTime = System.currentTimeMillis();
 //  //// System.out.println("\n Debug : Server.run() - starting server thread " + objNetwork.getServerConnectionStatus());
 //
 
-//	Thread.yield();
+//    Thread.yield();
 
-	processTransactions(trans);
-	
-	if(serverThreadId.equals("Thread1")) {
-		serverThreadRunningStatus1 = "terminated";
+        processTransactions(trans);
 
-	}
-	else {
-		serverThreadRunningStatus2 = "terminated";
-	}
-	
-	if(serverThreadRunningStatus1.equals("terminated") && serverThreadRunningStatus2.equals("terminated")) {
-		Network.disconnect(Network.getServerIP());
-	}
-	
-//	serverEndTime = System.currentTimeMillis();
-//        
-//        System.out.println("\n Terminating server thread - " + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
+        if(serverThreadId.equals("Thread1")) {
+            serverThreadRunningStatus1 = "terminated";
+
+        }
+        else {
+            serverThreadRunningStatus2 = "terminated";
+        }
+
+        if(serverThreadRunningStatus1.equals("terminated") && serverThreadRunningStatus2.equals("terminated")) {
+            Network.disconnect(Network.getServerIP());
+        }
+
+        serverEndTime = System.currentTimeMillis();
+//
+        System.out.println("\n Terminating server "+getServerThreadId() + " Running time " + (serverEndTime - serverStartTime) + " milliseconds");
 	
     }
 }
