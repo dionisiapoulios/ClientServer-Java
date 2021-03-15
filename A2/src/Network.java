@@ -30,10 +30,10 @@ public class Network extends Thread {
 	private static String inBufferStatus,
 			outBufferStatus; /* Current status of the network buffers - normal, full, empty */
 	private static String networkStatus; /* Network status - active, inactive */
-	private static Semaphore sent;
-	private static Semaphore received;
-	private static Semaphore input;
-	private static Semaphore output;
+	private static Semaphore sendingPermit;
+	private static Semaphore receivedCompleteTransaction;
+	private static Semaphore enterSever;
+	private static Semaphore exitServer;
 	/**
 	 * Constructor of the Network class
 	 * 
@@ -62,10 +62,10 @@ public class Network extends Thread {
 		inputIndexServer = 0;
 		outputIndexServer = 0;
 		outputIndexClient = 0;
-		sent = new Semaphore(maxNbPackets);
-		received = new Semaphore(0 );
-		input = new Semaphore(0);
-		output = new Semaphore(10);
+		sendingPermit = new Semaphore(maxNbPackets);		//starts with 10 permits to fill up the input buffer
+		receivedCompleteTransaction = new Semaphore(0 );	//starts with 0 permits to allow only one transaction at a time to be taken from the output buffer
+		enterSever = new Semaphore(0);		//starts with 0 permits to allow only one transaction at a time to enter the server
+		exitServer = new Semaphore(10);		//starts with 10 permits to fill up the output buffer
 		networkStatus = "active";
 	}
 
@@ -342,9 +342,10 @@ public class Network extends Thread {
 	
 	public static boolean send(Transactions inPacket) {
 
+		//gives a permit to a transaction wanting to enter the input buffer
 		try {
 			//System.out.println("Number of permit before: " + sent.availablePermits());
-			sent.acquire();
+			sendingPermit.acquire();
 			//System.out.println("Number of permit after: " + sent.availablePermits());
 
 		} catch (InterruptedException e) {
@@ -377,7 +378,10 @@ public class Network extends Thread {
 			setInBufferStatus("normal");
 
 		}
-		input.release();
+
+		//after transaction information has been transferred to input buffer and buffer status gets updated,
+		//a permit is released for a transaction to enter the server
+		enterSever.release();
 
 
 
@@ -396,9 +400,10 @@ public class Network extends Thread {
 
 	public static boolean receive(Transactions outPacket) {
 
+		//gives a permit for one transaction from the output buffer to be sent back to the client
 		try {
 			//System.out.println("Number of permit before: " + sent.availablePermits());
-			received.acquire();
+			receivedCompleteTransaction.acquire();
 
 			//System.out.println("Number of permit after: " + sent.availablePermits());
 		} catch (InterruptedException e) {
@@ -434,7 +439,10 @@ public class Network extends Thread {
 			setOutBufferStatus("normal");
 			
 		}
-		output.release();
+
+		//after a transaction is complete,
+		//a permit is released to allow another transaction to enter the output buffer
+		exitServer.release();
 
 		return true;
 	}
@@ -449,9 +457,10 @@ public class Network extends Thread {
 	 */
 	public synchronized static boolean transferOut(Transactions outPacket) {
 
+		//a permit is given to a transaction that is exiting the server and entering the output buffer
 		try {
 			//System.out.println("Number of permit before: " + sent.availablePermits());
-			output.acquire();
+			exitServer.acquire();
 
 			//System.out.println("Number of permit after: " + sent.availablePermits());
 		} catch (InterruptedException e) {
@@ -482,7 +491,9 @@ public class Network extends Thread {
 		} else {
 			setOutBufferStatus("normal");
 		}
-		received.release();
+		//after transferring transaction into output buffer from the server,
+		//a permit can be released to allow another transaction to be received by the client
+		receivedCompleteTransaction.release();
 
 		return true;
 	}
@@ -495,9 +506,10 @@ public class Network extends Thread {
 	 * 
 	 */
 	public synchronized static boolean transferIn(Transactions inPacket) {
+		//gives a transaction a permit to enter the server
 		try {
 			//System.out.println("Number of permit before: " + sent.availablePermits());
-			input.acquire();
+			enterSever.acquire();
 			//System.out.println("Number of permit after: " + sent.availablePermits());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -527,7 +539,9 @@ public class Network extends Thread {
 		} else {
 			setInBufferStatus("normal");
 		}
-		sent.release();
+		//after transaction is is server,
+		//a permit is released to allow a transaction to enter the input buffer
+		sendingPermit.release();
 
 		return true;
 	}
